@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -37,15 +36,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fileMap := groupFilesByExtension(files)
 	sortFiles(fileMap, dir)
-
-	jsonMap, err := json.Marshal(fileMap)
-	if err != nil {
-		log.Fatal(err)
-	}
-	os.WriteFile("fileMap.json", jsonMap, 0755)
-
 }
 
 func groupFilesByExtension(files []os.DirEntry) map[string][]string {
