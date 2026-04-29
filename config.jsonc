@@ -1,4 +1,7 @@
 {
+  // If disabled, groups will be ignored
+  // files will only be sorted by filetype
+  "useGroups": true,
   "groups": {
     "video": [
       "mp4", "mkv", "mov", "avi",
@@ -38,8 +41,5 @@
   // If given no arguments, Sift will sort the current working directory
   // This setting overrides that
   // For example when frequently sorting a Downloads folder
-  "defaultWorkingDir": "",
-
-  // If disabled, only folders for filetypes will be created
-  "useGroups": true
+  "defaultWorkingDir": ""
 }
