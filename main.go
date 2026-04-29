@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -12,18 +13,30 @@ import (
 // sift .
 
 func main() {
+	var dir string
+	var err error
+
 	args := os.Args
-
 	if len(args) == 1 {
-
+		dir, err = os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else if len(args) == 2 {
+		wd, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+		dir = filepath.Join(wd, args[1])
+	} else {
+		err = errors.New("Too many arguments")
+		log.Fatal(err)
 	}
-	fmt.Println(os.Getwd())
-	dir := os.Getwd()
+
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fileMap := groupFilesByExtension(files)
 	sortFiles(fileMap, dir)
 
