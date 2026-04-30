@@ -8,8 +8,12 @@ import (
 	"path/filepath"
 )
 
-// usage should be
-// sift .
+type Config struct {
+	Groups            map[string][]string
+	useGroups         bool
+	dirPrefix         string
+	defaultWorkingDir string
+}
 
 func main() {
 	var dir string
@@ -22,11 +26,7 @@ func main() {
 			log.Fatal(err)
 		}
 	} else if len(args) == 2 {
-		wd, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-		dir = filepath.Join(wd, args[1])
+		dir = filepath.Join(args[1])
 	} else {
 		err = errors.New("Too many arguments")
 		log.Fatal(err)
@@ -39,6 +39,12 @@ func main() {
 
 	fileMap := groupFilesByExtension(files)
 	sortFiles(fileMap, dir)
+
+	// yamlMap, err := yaml.Marshal(fileMap)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// os.WriteFile("fileMap.yaml", yamlMap, 0644)
 }
 
 func groupFilesByExtension(files []os.DirEntry) map[string][]string {
