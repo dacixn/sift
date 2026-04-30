@@ -1,6 +1,12 @@
-miscDirName: misc
 dirPrefix: _
 defaultWorkingDir: ""
+
+# If a file does not conform to any declared groups
+# it will be sent to a miscellanous folder
+miscDirName: misc
+
+# If disabled, groups will be ignored
+# files will only be sorted by filetype
 useGroups: true
 groups:
   video:
@@ -56,8 +62,8 @@ groups:
   - rtf
   - epub
   - md
-  executable:
-  - exe
+  executable:   # Executables are tricky on UNIX as they often contain no file extension
+  - exe         # MacOS .app files are actually folders, so they also remain unaffected (for now)
   - msi
   - bat
   - cmd
