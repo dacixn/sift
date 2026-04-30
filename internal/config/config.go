@@ -22,13 +22,14 @@ func InitConfig() *Config {
 	// then readConfig
 	// wtf should this return??
 	// take no args return config ptr
-	path, err := locateConfigFile()
-	if err != nil {
-		path, err = plantConfigFile()
-	}
+	/*
+		path, err := locateConfigFile()
+		if err != nil {
+			path, err = plantConfigFile()
+		}
 
-	cfg, err := readConfig(path)
-	return cfg
+		cfg, err := readConfig(path)
+		return cfg*/
 }
 
 // functions local to this module
@@ -46,14 +47,14 @@ func readConfig(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-func locateConfigFile() (string, error) {
+/* func locateConfigFile() (string, error) {
 	// hardcoded for now, change with flag eventually (probably with app struct)
 	configName := "config.toml"
 
 	// ...
 
 	return configPath, nil
-}
+} */
 
 func plantConfigFile() (path string, err error) {
 	return path, nil
