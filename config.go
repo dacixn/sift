@@ -13,15 +13,15 @@ type Config struct {
 	DefaultWorkingDir string              `yaml:"workingDir"`
 }
 
-func ConvertYamlToStruct(path string) (*Config, error) {
-	var config Config
+func ReadConfig(path string) (*Config, error) {
+	var cfg Config
 	yamlBytes, err := os.ReadFile(path)
 	if err != nil {
-		return &config, err
+		return nil, err
 	}
-	err = yaml.Unmarshal(yamlBytes, &config)
+	err = yaml.Unmarshal(yamlBytes, &cfg)
 	if err != nil {
-		return &config, err
+		return nil, err
 	}
-	return &config, nil
+	return &cfg, nil
 }
