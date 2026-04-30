@@ -7,7 +7,7 @@ miscDirName: misc
 
 # If disabled, groups will be ignored
 # files will only be sorted by filetype
-useGroups: true
+enableGroups: true
 groups:
   video:
   - mp4
