@@ -32,5 +32,8 @@ func main() {
 	}
 
 	fileMap := sort.GroupFilesByExtension(files)
-	sort.SortFiles(fileMap, dir)
+	err = sort.SortFiles(fileMap, dir)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
