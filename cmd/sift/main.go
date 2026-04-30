@@ -12,6 +12,7 @@ import (
 func main() {
 	var dir string
 	var err error
+	// cfg, err := config.ReadConfig("internal/config/config.yaml")
 
 	args := os.Args
 	if len(args) == 1 {
