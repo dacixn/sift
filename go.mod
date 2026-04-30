@@ -1,4 +1,4 @@
-module sift
+module github.com/dacixn/sift
 
 go 1.26.2
 
