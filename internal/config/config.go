@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -51,30 +52,35 @@ func readConfig(path string) (*Config, error) {
 
 func locateConfigFile() (string, error) {
 	// hardcoded for now, change with flag eventually (probably with app struct)
-
 	configName := "config.toml"
+	var errs []error
+	var dirs []string
 
-	configDir, err := os.UserConfigDir()
-	if err == nil {
-		// only check for sift folder in userconfigdir
-		configDir := filepath.Join(configDir, "sift")
-		configPath := filepath.Join(configDir, configName)
-		_, err = os.Stat(configPath)
+	userConfigDir, err := os.UserConfigDir()
+	if err != nil {
+		errs = append(errs, err)
+	} else {
+		dirs = append(dirs, filepath.Join(userConfigDir, "sift"))
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		errs = append(errs, err)
+	} else {
+		dirs = append(dirs, wd)
+	}
+
+	for _, dir := range dirs {
+		path := filepath.Join(dir, configName)
+		_, err = os.Stat(path)
 		if err == nil {
-			return configPath, nil
+			return path, nil
+		} else {
+			errs = append(errs, err)
 		}
 	}
 
-	configDir, err = os.Getwd()
-	if err == nil {
-		configPath := filepath.Join(configDir, configName)
-		_, err = os.Stat(configPath)
-		if err == nil {
-			return configPath, nil
-		}
-	}
-
-	return "", fmt.Errorf("Error locating configuration file")
+	return "", fmt.Errorf("Error locating configuration file: %w", errors.Join(errs...))
 }
 
 func plantConfigFile() (path string, err error) {
