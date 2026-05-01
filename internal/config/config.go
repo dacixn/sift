@@ -56,18 +56,18 @@ func locateConfigFile() (string, error) {
 	var errs []error
 	var dirs []string
 
-	userConfigDir, err := os.UserConfigDir()
-	if err != nil {
-		errs = append(errs, err)
-	} else {
-		dirs = append(dirs, filepath.Join(userConfigDir, "sift"))
-	}
-
 	wd, err := os.Getwd()
 	if err != nil {
 		errs = append(errs, err)
 	} else {
 		dirs = append(dirs, wd)
+	}
+
+	userConfigDir, err := os.UserConfigDir()
+	if err != nil {
+		errs = append(errs, err)
+	} else {
+		dirs = append(dirs, filepath.Join(userConfigDir, "sift"))
 	}
 
 	for _, dir := range dirs {
