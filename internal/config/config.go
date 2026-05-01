@@ -51,17 +51,30 @@ func readConfig(path string) (*Config, error) {
 
 func locateConfigFile() (string, error) {
 	// hardcoded for now, change with flag eventually (probably with app struct)
+
 	configName := "config.toml"
 
-	// ... need to add real logic
-
 	configDir, err := os.UserConfigDir()
-	if err != nil {
-		return "", fmt.Errorf("Error loading configuration: %w", err)
+	if err == nil {
+		// only check for sift folder in userconfigdir
+		configDir := filepath.Join(configDir, "sift")
+		configPath := filepath.Join(configDir, configName)
+		_, err = os.Stat(configPath)
+		if err == nil {
+			return configPath, nil
+		}
 	}
-	configPath := filepath.Join(configDir, configName)
 
-	return configPath, nil
+	configDir, err = os.Getwd()
+	if err == nil {
+		configPath := filepath.Join(configDir, configName)
+		_, err = os.Stat(configPath)
+		if err == nil {
+			return configPath, nil
+		}
+	}
+
+	return "", fmt.Errorf("Error locating configuration file")
 }
 
 func plantConfigFile() (path string, err error) {
