@@ -45,6 +45,7 @@ In order of relevance:
 * (Re)write group-parsing logic 
 * Update sorting logic to support wildcards
 * Refactor code to include an app struct in order to pass flags to functions more easily (once I implement flags)
+* ignoreDirs flag in config
 
 
 
