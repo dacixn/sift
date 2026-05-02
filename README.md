@@ -5,8 +5,8 @@ This is my first "real" Go project, and I'm still learning as I go (no pun inten
 
 ```yaml
 exe/:
-    VC_redist.x64.exe
     GitHubDesktopSetup-x64.exe
+    VC_redist.x64.exe
 jpg/:
     flowers.jpg
 pdf/:
@@ -34,3 +34,17 @@ video/:
 audio/:
     deftones.mp3
 ```
+
+### Other features
+* **Dry run**: Run without changing any files, possibly in combination with tree or log file
+* **File tree**: Export a `tree`-like overview of file changes
+* **Config flag**: Specify which config file to use with a command argument. (As of now, Sift checks the working directory then user configuration directory independent of OS.)
+
+### Notes and to-do
+In order of relevance:
+* (Re)write group-parsing logic 
+* Update sorting logic to support wildcards
+* Refactor code to include an app struct in order to pass flags to functions more easily (once I implement flags)
+
+
+
