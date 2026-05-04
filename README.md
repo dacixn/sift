@@ -13,6 +13,14 @@ pdf/:
     2025_Report.pdf
 ```
 
+## Building
+In order to build this project, you need to [install Go](https://go.dev/doc/install)
+
+```bash
+git clone https://github.com/dacixn/sift
+cd sift
+go build ./cmd/sift
+```
 ## Planned functionality
 
 Define groups and wildcards in config.toml:
@@ -38,7 +46,6 @@ audio/:
 ### Other features
 * **Dry run**: Run without changing any files, possibly in combination with tree or log file
 * **File tree**: Export a `tree`-like overview of file changes
-* **Config flag**: Specify which config file to use with a command argument. (As of now, Sift checks the working directory then user configuration directory independent of OS.)
 
 ### Notes and to-do
 In order of relevance:
