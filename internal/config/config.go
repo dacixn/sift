@@ -20,7 +20,7 @@ type Config struct {
 	IgnoreDirs bool                `toml:"ignoreDirs"`
 }
 
-//go:embed config.toml
+//go:embed .sift.toml
 var configFile []byte
 
 func (c *Config) Init() error {
