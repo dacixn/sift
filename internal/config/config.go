@@ -16,7 +16,7 @@ type Config struct {
 	DefaultWorkingDir string              `toml:"workingDir"`
 }
 
-// put yaml in here
+// put toml in here
 // var configFile []byte
 
 func InitConfig() *Config {
