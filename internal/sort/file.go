@@ -1,4 +1,4 @@
-package sort
+package filesort
 
 import (
 	"errors"
@@ -7,25 +7,25 @@ import (
 	"path/filepath"
 )
 
-func GroupFilesByExtension(files []os.DirEntry) map[string][]string {
-	fileMap := make(map[string][]string)
-	for _, file := range files {
-		fileType, ok := GetFileType(file)
-		if !ok {
-			continue
-		}
-		fileMap[fileType] = append(fileMap[fileType], file.Name())
-	}
-	return fileMap
-}
+// func GroupFilesByExtension(files []os.DirEntry) map[string][]string {
+// 	fileMap := make(map[string][]string)
+// 	for _, file := range files {
+// 		fileType, ok := GetFileType(file)
+// 		if !ok {
+// 			continue
+// 		}
+// 		fileMap[fileType] = append(fileMap[fileType], file.Name())
+// 	}
+// 	return fileMap
+// }
 
-func GetFileType(file os.DirEntry) (string, bool) {
-	fileType := filepath.Ext(file.Name())
-	if fileType == "" || file.IsDir() {
-		return "", false
-	}
-	return fileType, true
-}
+// func GetFileType(file os.DirEntry) (string, bool) {
+// 	fileType := filepath.Ext(file.Name())
+// 	if fileType == "" || file.IsDir() {
+// 		return "", false
+// 	}
+// 	return fileType, true
+// }
 
 func MoveFileToExtensionFolder(fileName, sourceDir, ext string) error {
 	oldPath := filepath.Join(sourceDir, fileName)
