@@ -1,6 +1,7 @@
 package config
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"os"
@@ -9,33 +10,35 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+const (
+	DefaultConfigName = ".sift.toml"
+)
+
 type Config struct {
-	Groups            map[string][]string `toml:"groups"`
-	EnableGroups      bool                `toml:"enableGroups"`
-	DirPrefix         string              `toml:"dirPrefix"`
-	DefaultWorkingDir string              `toml:"workingDir"`
+	DirPrefix  string              `toml:"dirPrefix"`
+	Groups     map[string][]string `toml:"groups"`
+	IgnoreDirs bool                `toml:"ignoreDirs"`
 }
 
-// put toml in here
-// var configFile []byte
+//go:embed config.toml
+var configFile []byte
 
-func InitConfig() *Config {
-	// locateConfig
-	// if not exist plantConfig
-	// then readConfig
-	// wtf should this return??
-	// take no args return config ptr
-
+func (c *Config) Init() error {
 	path, err := locateConfigFile()
 	if err != nil {
 		path, err = plantConfigFile()
+		if err != nil {
+			return fmt.Errorf("failed to plant config: %w", err)
+		}
 	}
 
 	cfg, err := readConfig(path)
-	return cfg
+	if err != nil {
+		return fmt.Errorf("failed to read config: %w", err)
+	}
+	*c = *cfg
+	return nil
 }
-
-// functions local to this module
 
 func readConfig(path string) (*Config, error) {
 	var cfg Config
@@ -50,9 +53,15 @@ func readConfig(path string) (*Config, error) {
 	return &cfg, nil
 }
 
+func appConfigDir() (string, error) {
+	userConfigDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(userConfigDir, "sift"), nil
+}
+
 func locateConfigFile() (string, error) {
-	// hardcoded for now, change with flag eventually (probably with app struct)
-	configName := "config.toml"
 	var errs []error
 	var dirs []string
 
@@ -63,15 +72,15 @@ func locateConfigFile() (string, error) {
 		dirs = append(dirs, wd)
 	}
 
-	userConfigDir, err := os.UserConfigDir()
+	appConfigDir, err := appConfigDir()
 	if err != nil {
 		errs = append(errs, err)
 	} else {
-		dirs = append(dirs, filepath.Join(userConfigDir, "sift"))
+		dirs = append(dirs, appConfigDir)
 	}
 
 	for _, dir := range dirs {
-		path := filepath.Join(dir, configName)
+		path := filepath.Join(dir, DefaultConfigName)
 		_, err = os.Stat(path)
 		if err == nil {
 			return path, nil
@@ -80,9 +89,23 @@ func locateConfigFile() (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("Error locating configuration file: %w", errors.Join(errs...))
+	return "", fmt.Errorf("error locating configuration file: %w", errors.Join(errs...))
 }
 
-func plantConfigFile() (path string, err error) {
+func plantConfigFile() (string, error) {
+	appConfigDir, err := appConfigDir()
+	if err != nil {
+		return "", err
+	}
+	err = os.MkdirAll(appConfigDir, 0755)
+	if err != nil {
+		return "", err
+	}
+	path := filepath.Join(appConfigDir, DefaultConfigName)
+	err = os.WriteFile(path, configFile, 0600)
+	if err != nil {
+		return "", err
+	}
+
 	return path, nil
 }
