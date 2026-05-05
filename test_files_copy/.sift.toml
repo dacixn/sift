@@ -1,0 +1,21 @@
+[groups]
+"documents" = ["*.pdf", "*.csv", "*.docx", "*.txt", "*.xlsx"]
+"documents/archive" = ["*archive*"]
+"documents/backup" = ["*backup*"]
+"documents/notes" = ["*note*"]
+"documents/finance" = ["*budget*", "*booking*", "*statement*", "*receipt*", "*invoice*"]
+
+"audio" = ["*.mp3", "*.flac"]
+"audio/memo" = ["*memo*"]
+
+"images" = ["*.png", "*.jpeg", "*.jpg"]
+"images/screenshot" = ["*screenshot*"]
+
+"code" = ["*.py", "*.js"]
+
+# here i have authored a configuration file in relation to these example documents here
+# now i will run sift
+# this should work on linux too
+# the rest of the files are files that did not adhere to any wildcard rules so they remain unsorted
+# you could do this
+# and rerun
