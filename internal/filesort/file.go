@@ -7,46 +7,57 @@ import (
 	"path/filepath"
 )
 
-// func GroupFilesByExtension(files []os.DirEntry) map[string][]string {
-// 	fileMap := make(map[string][]string)
-// 	for _, file := range files {
-// 		fileType, ok := GetFileType(file)
-// 		if !ok {
-// 			continue
-// 		}
-// 		fileMap[fileType] = append(fileMap[fileType], file.Name())
-// 	}
-// 	return fileMap
-// }
-
-// func GetFileType(file os.DirEntry) (string, bool) {
-// 	fileType := filepath.Ext(file.Name())
-// 	if fileType == "" || file.IsDir() {
-// 		return "", false
-// 	}
-// 	return fileType, true
-// }
-
-func MoveFileToExtensionFolder(fileName, sourceDir, ext string) error {
-	oldPath := filepath.Join(sourceDir, fileName)
-	newPath := filepath.Join(sourceDir, ext, fileName)
-	return os.Rename(oldPath, newPath)
-}
-
-func SortFiles(fileMap map[string][]string, sourceDir string) error {
+func SortFiles(groups map[string][]string, path string) error {
 	var errs []error
-	for ext, group := range fileMap {
-		err := os.MkdirAll(filepath.Join(sourceDir, ext), 0755)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("could not create directory for %s: %w", ext, err))
+	groupKeys := GetGroupKeys(groups)
+	SortGroupKeysByDepth(&groupKeys)
+	for _, key := range groupKeys {
+		group := groups[key]
+		if len(group) == 0 {
 			continue
 		}
-		for _, file := range group {
-			err := MoveFileToExtensionFolder(file, sourceDir, ext)
+		os.MkdirAll(filepath.Join(path, key), 0755)
+		for _, pattern := range group {
+			fileNameList, err := getFileListByPattern(pattern, path)
 			if err != nil {
-				errs = append(errs, fmt.Errorf("could not move %s: %w", file, err))
+				errs = append(errs, fmt.Errorf("error getting filenames: %w", err))
+			}
+			for _, fileName := range fileNameList {
+				moveFile(fileName, path, filepath.Join(path, key))
+				if err != nil {
+					errs = append(errs, fmt.Errorf("error moving file: %w", err))
+				}
 			}
 		}
 	}
+
 	return errors.Join(errs...)
+}
+
+func getFileListByPattern(pattern string, path string) ([]string, error) {
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+	var matchingFiles []string
+	for _, file := range files {
+		matched, err := filepath.Match(pattern, file.Name())
+		if err != nil {
+			return nil, err
+		}
+		if matched {
+			matchingFiles = append(matchingFiles, file.Name())
+		}
+	}
+	return matchingFiles, nil
+}
+
+func moveFile(fileName string, origin string, dest string) error {
+	originPath := filepath.Join(origin, fileName)
+	destPath := filepath.Join(dest, fileName)
+	err := os.Rename(originPath, destPath)
+	if err != nil {
+		return err
+	}
+	return nil
 }

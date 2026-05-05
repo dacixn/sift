@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alecthomas/kong"
 	"github.com/dacixn/sift/internal/config"
+	"github.com/dacixn/sift/internal/filesort"
 )
 
 var cli struct {
@@ -14,12 +15,7 @@ var cli struct {
 func main() {
 	var cfg config.Config
 	cfg.Init()
+	kong.Parse(&cli)
 
-	ctx := kong.Parse(&cli)
-	switch ctx.Command() {
-	case "rm <path>":
-	case "ls":
-	default:
-		panic(ctx.Command())
-	}
+	filesort.SortFiles(cfg.Groups, cli.Path)
 }
